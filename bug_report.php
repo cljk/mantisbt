@@ -59,7 +59,13 @@
 
 	$t_bug_data = new BugData;
 	$t_bug_data->project_id             = $t_project_id;
-	$t_bug_data->reporter_id            = auth_get_current_user_id();
+	# itpool begin
+	if (( ON==config_get( 'select_reporter')) and ( access_has_project_level( config_get( 'select_reporter_threshold' ) ) )) {
+		$t_bug_data->reporter_id = gpc_get_int( 'reporter_id', 0 );
+	} else {
+		$t_bug_data->reporter_id = auth_get_current_user_id();
+	}
+	# itpool end
 	$t_bug_data->build                  = gpc_get_string( 'build', '' );
 	$t_bug_data->platform               = gpc_get_string( 'platform', '' );
 	$t_bug_data->os                     = gpc_get_string( 'os', '' );

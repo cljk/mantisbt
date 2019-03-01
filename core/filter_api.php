@@ -3480,10 +3480,16 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 					</select>
 					<input type="submit" name="switch_to_query_button" class="button-small" value="<?php echo lang_get( 'use_query' )?>" />
 					</form>
+					<?php                                                                                #itpool
+					if( access_has_project_level( config_get( 'stored_query_create_threshold' ) ) ) {    #itpool
+		?>
 					<form method="post" name="open_queries" action="query_view_page.php">
 					<?php # CSRF protection not required here - form does not result in modifications ?>
 					<input type="submit" name="switch_to_query_button" class="button-small" value="<?php echo lang_get( 'open_queries' )?>" />
 					</form>
+					<?php                                                                                #itpool
+		}                                                                                                            #itpool
+		?>
 				<?php
 	} else {
 		?>

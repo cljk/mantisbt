@@ -357,12 +357,14 @@ function auth_get_password_max_size() {
  * @access public
  */
 function auth_does_password_match( $p_user_id, $p_test_password ) {
-	$t_configured_login_method = config_get( 'login_method' );
-
-	if( LDAP == $t_configured_login_method ) {
-		return ldap_authenticate( $p_user_id, $p_test_password );
+	# Try LDAP authentification if $g_ldap_protocol_version == 3
+	# Successful LDAP authentification requires the username to be in mantis_user_table
+	if( 3 == config_get( 'ldap_protocol_version' )) {            # KSG
+          if( ldap_authenticate( $p_user_id, $p_test_password ))     # KSG
+		return true;                                         # KSG
 	}
 
+	$t_configured_login_method = config_get( 'login_method' );   # KSG
 	$t_password = user_get_field( $p_user_id, 'password' );
 	$t_login_methods = Array(
 		MD5,

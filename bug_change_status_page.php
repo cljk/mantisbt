@@ -259,7 +259,8 @@ foreach( $t_related_custom_field_ids as $t_id ) {
 ?>
 
 <?php
-if ( ( $f_new_status >= $t_resolved ) ) {
+#if ( ( $f_new_status >= $t_resolved ) ) {  ### KSG
+if ( ( $f_new_status == RESOLVED ) ) {      ### KSG
 	if (   version_should_show_product_version( $t_bug->project_id )
 		&& !bug_is_readonly( $f_bug_id )
 		&& access_has_bug_level( config_get( 'update_bug_threshold' ), $f_bug_id )

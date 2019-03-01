@@ -85,7 +85,7 @@
 	</td>
 	<td width="40%">
 		<?php
-			print_manage_project_sort_link( 'manage_proj_page.php', lang_get( 'description' ), 'description', $t_direction, $f_sort );
+			print_manage_project_sort_link( 'manage_proj_page.php', lang_get( 'project_description' ), 'description', $t_direction, $f_sort );
 			print_sort_icon( $t_direction, $f_sort, 'description' );
 		?>
 	</td>

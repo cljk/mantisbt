@@ -155,7 +155,7 @@
 	$tpl_show_additional_information = !is_blank( $tpl_bug->additional_information ) && in_array( 'additional_info', $t_fields );
 	$tpl_show_steps_to_reproduce = !is_blank( $tpl_bug->steps_to_reproduce ) && in_array( 'steps_to_reproduce', $t_fields );
 	$tpl_show_monitor_box = !$tpl_force_readonly;
-	$tpl_show_relationships_box = !$tpl_force_readonly;
+	$tpl_show_relationships_box = !$tpl_force_readonly && (!$g_itpool || REPORTER != access_get_project_level( $t_project_id ));      #itpool
 	$tpl_show_upload_form = !$tpl_force_readonly && !bug_is_readonly( $f_bug_id );
 	$tpl_show_history = $f_history;
 	$tpl_show_profiles = config_get( 'enable_profiles' );

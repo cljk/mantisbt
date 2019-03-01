@@ -187,6 +187,26 @@
 <?php
 	event_signal( 'EVENT_REPORT_BUG_FORM_TOP', array( $t_project_id ) );
 
+	# itpool begin
+	if ( ON==config_get( 'select_reporter')) { 
+         if ( access_has_project_level( config_get( 'select_reporter_threshold' ) ) ) { 
+?>
+             <tr <?php echo helper_alternate_class() ?>>
+             <!-- Reporter -->
+             <td class="category">
+             <?php echo lang_get( 'reporter' ) ?>
+             </td>
+             <td>
+             <select <?php echo helper_get_tab_index() ?> name="reporter_id">
+             <?php print_reporter_option_list( auth_get_current_user_id(), $t_bug->project_id ) ?>
+             </select>
+             </td>
+             </tr>
+             <?php 
+         } ?>
+<?php }
+	# itpool end
+
 	if ( $tpl_show_category ) {
 ?>
 	<tr <?php echo helper_alternate_class() ?>>
@@ -595,15 +615,8 @@
 	</tr>
 <?php
 	}
+// itpool: removed 'Report Stay'
 ?>
-	<tr <?php echo helper_alternate_class() ?>>
-		<td class="category">
-			<?php print_documentation_link( 'report_stay' ) ?>
-		</td>
-		<td>
-			<label><input <?php echo helper_get_tab_index() ?> type="checkbox" id="report_stay" name="report_stay" <?php check_checked( $f_report_stay ) ?> /> <?php echo lang_get( 'check_report_more_bugs' ) ?></label>
-		</td>
-	</tr>
 	<tr>
 		<td class="left">
 			<span class="required"> * <?php echo lang_get( 'required' ) ?></span>

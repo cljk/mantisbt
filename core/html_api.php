@@ -740,9 +740,12 @@ function print_menu() {
 		echo '<tr>';
 		echo '<td class="menu">';
 		$t_menu_options = array();
+		$t_itpool = config_get( 'itpool', 0 );                               #itpool
 
 		# Main Page
-		$t_menu_options[] = '<a href="' . helper_mantis_url( 'main_page.php' ) . '">' . lang_get( 'main_link' ) . '</a>';
+		if( empty( $t_itpool ) || access_has_project_level(REPORTER) ) {  #itpool
+			$t_menu_options[] = '<a href="' . helper_mantis_url( 'main_page.php' ) . '">' . lang_get( 'main_link' ) . '</a>';
+		}                                                                               #itpool
 
 		# Plugin / Event added options
 		$t_event_menu_options = event_signal( 'EVENT_MENU_MAIN_FRONT' );
@@ -759,7 +762,9 @@ function print_menu() {
 		}
 
 		# My View
-		$t_menu_options[] = '<a href="' . helper_mantis_url( 'my_view_page.php">' ) . lang_get( 'my_view_link' ) . '</a>';
+		if( empty( $t_itpool ) || access_has_project_level(DEVELOPER) ) {  #itpool
+			$t_menu_options[] = '<a href="' . helper_mantis_url( 'my_view_page.php">' ) . lang_get( 'my_view_link' ) . '</a>';
+		}                                                                               #itpool
 
 		# View Bugs
 		$t_menu_options[] = '<a href="' . helper_mantis_url( 'view_all_bug_page.php">' ) . lang_get( 'view_bugs_link' ) . '</a>';
@@ -841,7 +846,7 @@ function print_menu() {
 		}
 
 		# Account Page (only show accounts that are NOT protected)
-		if( OFF == $t_protected ) {
+		if( OFF == $t_protected && ( empty( $t_itpool ) || access_has_project_level(UPDATER) ) ) {   #itpool
 			$t_menu_options[] = '<a href="' . helper_mantis_url( 'account_page.php">' ) . lang_get( 'account_link' ) . '</a>';
 		}
 

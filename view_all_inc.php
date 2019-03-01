@@ -127,6 +127,8 @@
 		?> </span>
 
 		<span class="floatleft small"> <?php
+		$t_itpool = config_get( 'itpool', 0 );                                #itpool
+		if( empty( $t_itpool ) || access_has_project_level( DEVELOPER ) ) {  #itpool
 				# -- Print and Export links --
 				echo '&#160;';
 				print_bracket_link( 'print_all_bug_page.php', lang_get( 'print_all_bug_page_link' ) );
@@ -150,6 +152,7 @@
 						}
 					}
 				}
+			}  #itpool
 		?> </span>
 
 		<span class="floatright small"><?php

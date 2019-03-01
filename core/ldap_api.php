@@ -321,6 +321,32 @@ function ldap_authenticate( $p_user_id, $p_password ) {
 	return ldap_authenticate_by_username( $t_username, $p_password );
 }
 
+# BEGIN of itpool modification ###
+/**
+ * Authenticates an user via LDAP given the username and password,
+ * optionally using multiple LDAP servers defined by g_ldap_auth_profiles.
+ *
+ * @param string $p_username The user name.
+ * @param string $p_password The password.
+ * @return true: authenticated, false: failed to authenticate.
+ */
+function ldap_authenticate_by_username( $p_username, $p_password ) {
+	$t_ldap_auth_profiles = config_get( 'ldap_auth_profiles', '' );
+	if( !empty( $t_ldap_auth_profiles ) ) {
+		foreach ( $t_ldap_auth_profiles as $t_ldap_auth_profiles_key => $t_ldap_auth_profiles_value ) {
+			foreach ( $t_ldap_auth_profiles[$t_ldap_auth_profiles_key] as $t_key => $t_value )
+                                config_set_cache( $t_key, $t_value, CONFIG_TYPE_STRING );
+			if( ldap_authenticate_by_username_one_server( $p_username, $p_password ) )
+				return true;
+		}
+		return false;
+	}
+	else {
+		return ldap_authenticate_by_username_one_server( $p_username, $p_password );
+	}
+}
+# END of itpool modification ###
+
 /**
  * Authenticates an user via LDAP given the username and password.
  *
@@ -328,7 +354,7 @@ function ldap_authenticate( $p_user_id, $p_password ) {
  * @param string $p_password The password.
  * @return true: authenticated, false: failed to authenticate.
  */
-function ldap_authenticate_by_username( $p_username, $p_password ) {
+function ldap_authenticate_by_username_one_server( $p_username, $p_password ) {    #itpool
 	if ( ldap_simulation_is_enabled() ) {
 		log_event( LOG_LDAP, "Authenticating via LDAP simulation" );
 		$t_authenticated = ldap_simulation_authenticate_by_username( $p_username, $p_password );

@@ -121,13 +121,18 @@ function bugnote_is_user_reporter( $p_bugnote_id, $p_user_id ) {
  * @param string $p_attr
  * @param int $p_user_id user id
  * @param bool $p_send_email generate email?
+ * @param int $p_date_submitted date submitted (defaults to now())
+ * @param int $p_last_modified last modification date (defaults to now())
+ * @param bool $p_skip_bug_update skip bug last modification update (useful when importing bugs/bugnotes)
  * @return false|int false or indicating bugnote id added
  * @access public
  */
-function bugnote_add( $p_bug_id, $p_bugnote_text, $p_time_tracking = '0:00', $p_private = false, $p_type = BUGNOTE, $p_attr = '', $p_user_id = null, $p_send_email = TRUE, $p_log_history = TRUE) {
+function bugnote_add( $p_bug_id, $p_bugnote_text, $p_time_tracking = '0:00', $p_private = false, $p_type = BUGNOTE, $p_attr = '', $p_user_id = null, $p_send_email = TRUE, $p_log_history = TRUE, $p_date_submitted = 0, $p_last_modified = 0, $p_skip_bug_update = FALSE ) {
 	$c_bug_id = db_prepare_int( $p_bug_id );
 	$c_time_tracking = helper_duration_to_minutes( $p_time_tracking );
 	$c_type = db_prepare_int( $p_type );
+	$c_date_submitted = $p_date_submitted <= 0 ? db_now() : db_prepare_int( $p_date_submitted );
+	$c_last_modified = $p_last_modified <= 0 ? db_now() : db_prepare_int( $p_last_modified );
 
 	if( REMINDER !== $p_type ) {
 		# Check if this is a time-tracking note
@@ -179,13 +184,15 @@ function bugnote_add( $p_bug_id, $p_bugnote_text, $p_time_tracking = '0:00', $p_
 				(bug_id, reporter_id, bugnote_text_id, view_state, date_submitted, last_modified, note_type, note_attr, time_tracking )
 			VALUES
 				(" . db_param() . ', ' . db_param() . ',' . db_param() . ', ' . db_param() . ', ' . db_param() . ',' . db_param() . ', ' . db_param() . ', ' . db_param() . ', ' . db_param() . ' )';
-	db_query_bound( $query, Array( $c_bug_id, $c_user_id, $t_bugnote_text_id, $t_view_state, db_now(), db_now(), $c_type, $p_attr, $c_time_tracking ) );
+	db_query_bound( $query, Array( $c_bug_id, $c_user_id, $t_bugnote_text_id, $t_view_state, $c_date_submitted, $c_last_modified, $c_type, $p_attr, $c_time_tracking ) );
 
 	# get bugnote id
 	$t_bugnote_id = db_insert_id( $t_bugnote_table );
 
 	# update bug last updated
-	bug_update_date( $p_bug_id );
+	if ( !$p_skip_bug_update ) {
+		bug_update_date( $p_bug_id );
+	}
 
 	# log new bug
 	if ( TRUE == $p_log_history)

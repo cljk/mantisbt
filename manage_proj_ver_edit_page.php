@@ -70,7 +70,7 @@
 </tr>
 <tr <?php echo helper_alternate_class() ?>>
 	<td class="category">
-		<?php echo lang_get( 'description' ) ?>
+		<?php echo lang_get( 'project_description' ) ?>
 	</td>
 	<td>
 		<textarea name="description" cols="60" rows="5"><?php echo string_attribute( $t_version->description ) ?></textarea>
